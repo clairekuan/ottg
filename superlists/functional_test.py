@@ -11,6 +11,16 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit() #window closes
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
+    def enter_a_new_item(self, todo_text):
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Use peacock feathers to make a fly')
+        inputbox.send_keys(Keys.ENTER)
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app.
         # She goes to check out its homepage.
@@ -31,23 +41,22 @@ class NewVisitorTest(unittest.TestCase):
 
         # She types "Buy peacock feathers" into a text box
         # (Edith's hobby is tying fly-fishing lures)
-        inputbox.send_keys('Buy peacock feathers')
+        self.enter_a_new_item('Buy peacock feathers')
 
         # When she hits enter, the page updates, and now the page lists
         # "1. Buy peacock feather" as an item in a to-do lists
-        inputbox.send_keys(Keys.ENTER)
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1. Buy peacock feathers' for row in rows)
-        )
+        self.check_for_row_in_list_table('1. Buy peacock feathers')
+
 
         # There is still a text box inviting her to add another item
         # She enters 'Use peacock feathers to make fly'
         # (Edith is very methodological)
+        self.enter_a_new_item('Use peacock feathers to make fly')
 
         # The homepage updates again, and now shows both its items on her lists
+        self.check_for_row_in_list_table('1: Buy peacock feathers')
+        self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
         # Edith wonders whether the site will remember her lists.  Then she sees
         # that the site has generated a unique URL for her -- there is some
