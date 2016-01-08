@@ -26,6 +26,7 @@ class NewVisitorTest(LiveServerTestCase):
         # She goes to check out its homepage.
         self.browser.get(self.live_server_url) #go to the homepage
 
+
         # She notices the page title and header mention to-do lists.
         self.assertIn('To-Do', self.browser.title)
         #find h1 tag on the page
@@ -50,7 +51,7 @@ class NewVisitorTest(LiveServerTestCase):
         edith_list_url = self.browser.current_url
         self.assertRegexpMatches(edith_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1. Buy peacock feathers')
-        
+
         # There is still a text box inviting her to add another item
         # She enters 'Use peacock feathers to make fly'
         # (Edith is very methodological)
@@ -88,3 +89,25 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('Buy milk', page_text)
 
         #Satisfied, they both go back to sleep.
+
+def test_layout_and_styling(self):
+    # Edith has heard about a cool new online to-do app.
+    # She goes to check out its homepage.
+    self.browser.set_window_size(1024, 768)
+    self.browser.get(self.live_server_url) #go to the homepage
+
+    #She notices the input box is nicely centered
+    self.check_input_box_is_centered()
+
+    #She starts a new list and sees the box is centered
+    self.enter_a_new_item('testing')
+    self.check_input_box_is_centered()
+
+
+def check_input_box_is_centered(self):
+    inputbox = self.browser.find_element_by_id('id_new_item')
+    self.assertAlmostEqual(
+        inputbox.location['x'] + inputbox.size['width']/2,
+        512,
+        delta = 5
+    )
