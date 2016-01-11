@@ -21,6 +21,8 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(todo_text)
         inputbox.send_keys(Keys.ENTER)
 
+
+
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app.
         # She goes to check out its homepage.
@@ -44,13 +46,13 @@ class NewVisitorTest(LiveServerTestCase):
         self.enter_a_new_item('Buy peacock feathers')
 
         # When she hits enter, she is taken to a new URL
-        # abd now the page lists "1. Buy peacock feather"
+        # and now the page lists "1. Buy peacock feather"
         # as an item in a to-do lists
         #inputbox.send_keys(Keys.ENTER)
         edith_list_url = self.browser.current_url
         self.assertRegexpMatches(edith_list_url, '/lists/.+')
         self.check_for_row_in_list_table('1. Buy peacock feathers')
-        
+
         # There is still a text box inviting her to add another item
         # She enters 'Use peacock feathers to make fly'
         # (Edith is very methodological)
@@ -59,6 +61,14 @@ class NewVisitorTest(LiveServerTestCase):
         # The homepage updates again, and now shows both its items on her lists
         self.check_for_row_in_list_table('1. Buy peacock feathers')
         self.check_for_row_in_list_table('2. Use peacock feathers to make fly')
+
+
+
+        ###### Edith deletes the last item on her list
+        self.delete_a_list_item('2. Use peacock feathers to make fly')
+
+
+
 
         # Now a new user, Francis, comes along to the site
 
