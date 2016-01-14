@@ -127,7 +127,7 @@ class ListViewTest(TestCase):
         response = self.client.get('/lists/%d/' % (current_list.id, ))
         self.assertContains(response, 'input type = "checkbox"')
 
-    def test_POST_items_toggles_done(self):
+    def test_POST_items_marks_done(self):
         #create list and items
         current_list = List.objects.create()
         item1 = Item.objects.create(text = "Item 1", list = current_list)
@@ -178,3 +178,34 @@ class ListViewTest(TestCase):
         item2 = Item.objects.get(id=item2.id)
         self.assertFalse(item1.is_done)
         self.assertFalse(item2.is_done)
+
+    def test_POST_items_toggles_done(self):
+        #create list and items
+        current_list = List.objects.create()
+        item1 = Item.objects.create(
+            text = "Item 1",
+            list = current_list,
+            is_done = True
+        )
+
+        item2 = Item.objects.create(
+            text = "Item 2",
+            list = current_list,
+            is_done = False
+        )
+
+
+        #post data
+        response = self.client.post(
+            '/lists/%d/items/' % (current_list.id),
+            data = {'mark_item_done': [item2.id]}
+        )
+
+        # -including toggle item
+        self.assertRedirects(response, '/lists/%d/' % (current_list.id, ))
+
+        #check that item itself is updated
+        item1 = Item.objects.get(id=item1.id)
+        item2 = Item.objects.get(id=item2.id)
+        self.assertFalse(item1.is_done)
+        self.assertTrue(item2.is_done)
