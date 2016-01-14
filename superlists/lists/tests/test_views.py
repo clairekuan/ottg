@@ -21,7 +21,16 @@ class HomePageTest(TestCase):
 
         self.assertEqual(response.content.decode(), expected_html)
 
+    def test_home_page_has_todo_lists(self):
+        list1 = List.objects.create(name="List 1")
+        list2 = List.objects.create(name="List 2")
 
+        response = self.client.get('/')
+
+        context = response.context['todo_lists']
+        self.assertEqual(len(context), 2)
+        self.assertEqual(context[0], list1)
+        self.assertEqual(context[1], list2)
 
 class NewListTest(TestCase):
     def test_save_a_POST_request(self):

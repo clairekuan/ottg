@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from lists.models import Item, List
 
 def home_page(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html', {'todo_lists': List.objects.all()})
 
 def new_list(request):
     new_list = List.objects.create()
