@@ -117,7 +117,13 @@ class ListViewTest(TestCase):
         )
         self.assertEqual(Item.objects.count(), 0)
 
-
+    def test_new_list_has_name_of_first_item(self):
+        response = self.client.post(
+            '/lists/new',
+            data = {'item_text': 'A new lists item'}
+        )
+        new_list = List.objects.first() #get id just created
+        self.assertEqual(new_list.name, 'A new lists item')
 
     def test_list_view_displays_checkbox(self):
         current_list = List.objects.create()
